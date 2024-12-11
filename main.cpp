@@ -202,12 +202,35 @@ void getPosition(const std::string &accessToken, const std::string &instrument)
 
     auto start = std::chrono::high_resolution_clock::now();
     std::string response = sendRequest("https://test.deribit.com/api/v2/private/get_position", payload, accessToken);
+    auto responseJson = json::parse(response);
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> latency = end - start;
 
-    auto responseJson = json::parse(response);
-    std::cout << "Position Details for " << instrument << ":\n\n";
-    std::cout << "Estimated Liquidation Price: " << responseJson["result"]["estimated_liquidation_price"] << '\n';
+   if (responseJson.contains("result")) {
+                std::cout << "Position Details for " << instrument << ":\n\n";
+                auto result = responseJson["result"];
+                std::cout << "Estimated Liquidation Price: " << result["estimated_liquidation_price"] << '\n';
+                std::cout << "Size Currency: " << result["size_currency"] << '\n';
+                std::cout << "Realized Funding: " << result["realized_funding"] << '\n';
+                std::cout << "Total Profit Loss: " << result["total_profit_loss"] << '\n';
+                std::cout << "Realized Profit Loss: " << result["realized_profit_loss"] << '\n';
+                std::cout << "Floating Profit Loss: " << result["floating_profit_loss"] << '\n';
+                std::cout << "Leverage: " << result["leverage"] << '\n';
+                std::cout << "Average Price: " << result["average_price"] << '\n';
+                std::cout << "Delta: " << result["delta"] << '\n';
+                std::cout << "Interest Value: " << result["interest_value"] << '\n';
+                std::cout << "Mark Price: " << result["mark_price"] << '\n';
+                std::cout << "Settlement Price: " << result["settlement_price"] << '\n';
+                std::cout << "Index Price: " << result["index_price"] << '\n';
+                std::cout << "Direction: " << result["direction"] << '\n';
+                std::cout << "Open Orders Margin: " << result["open_orders_margin"] << '\n';
+                std::cout << "Initial Margin: " << result["initial_margin"] << '\n';
+                std::cout << "Maintenance Margin: " << result["maintenance_margin"] << '\n';
+                std::cout << "Kind: " << result["kind"] << '\n';
+                std::cout << "Size: " << result["size"] << '\n';
+    } else {
+        std::cerr << "Error: Could not retrieve position data." << std::endl;
+    }
 
     std::cout << "End-to-end trading loop latency: " << latency.count() << " seconds." << std::endl;
 }
