@@ -19,7 +19,6 @@ std::string getEnvVariable(const std::string &key) {
         std::cerr << "Error: Could not open .env file.\n";
         return "";
     }
-
     std::string line;
     while (std::getline(envFile, line)) {
         size_t pos = line.find('=');
