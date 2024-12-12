@@ -7,27 +7,33 @@
 
 using json = nlohmann::json;
 
-std::string trim(const std::string &str) {
+std::string trim(const std::string &str)
+{
     size_t first = str.find_first_not_of(" \t\r\n");
     size_t last = str.find_last_not_of(" \t\r\n");
     return (first == std::string::npos || last == std::string::npos) ? "" : str.substr(first, last - first + 1);
 }
 
-std::string getEnvVariable(const std::string &key) {
+std::string getEnvVariable(const std::string &key)
+{
     std::ifstream envFile(".env");
-    if (!envFile.is_open()) {
+    if (!envFile.is_open())
+    {
         std::cerr << "Error: Could not open .env file.\n";
         return "";
     }
     std::string line;
-    while (std::getline(envFile, line)) {
+    while (std::getline(envFile, line))
+    {
         size_t pos = line.find('=');
-        if (pos != std::string::npos) {
+        if (pos != std::string::npos)
+        {
             std::string currentKey = line.substr(0, pos);
             std::string value = line.substr(pos + 1);
             currentKey = trim(currentKey);
             value = trim(value); // Trim whitespace and carriage return
-            if (currentKey == key) {
+            if (currentKey == key)
+            {
                 return value;
             }
         }
@@ -96,20 +102,20 @@ std::string getAccessToken(const std::string &clientId, const std::string &clien
     json payload = {
         {"id", 0},
         {"method", "public/auth"},
-        {"params", {{"grant_type", "client_credentials"}, {"scope", "session:apiconsole-c5i26ds6dsr expires:2592000"}, {"client_id", clientId}, {"client_secret", clientSecret}}}, 
+        {"params", {{"grant_type", "client_credentials"}, {"scope", "session:apiconsole-c5i26ds6dsr expires:2592000"}, {"client_id", clientId}, {"client_secret", clientSecret}}},
         {"jsonrpc", "2.0"}};
 
     std::string response = sendRequest("https://test.deribit.com/api/v2/public/auth", payload);
     auto responseJson = json::parse(response);
 
     if (responseJson.contains("result") && responseJson["result"].contains("access_token"))
-    {   
+    {
         // std::cout << "Payload: " << payload.dump(4) << std::endl;
         return responseJson["result"]["access_token"];
     }
     else
-    {   
-        std::cerr << "Failed to retrieve access token."<< std::endl;
+    {
+        std::cerr << "Failed to retrieve access token." << std::endl;
         return "";
     }
 }
@@ -205,29 +211,32 @@ void getPosition(const std::string &accessToken, const std::string &instrument)
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> latency = end - start;
 
-   if (responseJson.contains("result")) {
-                std::cout << "Position Details for " << instrument << ":\n\n";
-                auto result = responseJson["result"];
-                std::cout << "Estimated Liquidation Price: " << result["estimated_liquidation_price"] << '\n';
-                std::cout << "Size Currency: " << result["size_currency"] << '\n';
-                std::cout << "Realized Funding: " << result["realized_funding"] << '\n';
-                std::cout << "Total Profit Loss: " << result["total_profit_loss"] << '\n';
-                std::cout << "Realized Profit Loss: " << result["realized_profit_loss"] << '\n';
-                std::cout << "Floating Profit Loss: " << result["floating_profit_loss"] << '\n';
-                std::cout << "Leverage: " << result["leverage"] << '\n';
-                std::cout << "Average Price: " << result["average_price"] << '\n';
-                std::cout << "Delta: " << result["delta"] << '\n';
-                std::cout << "Interest Value: " << result["interest_value"] << '\n';
-                std::cout << "Mark Price: " << result["mark_price"] << '\n';
-                std::cout << "Settlement Price: " << result["settlement_price"] << '\n';
-                std::cout << "Index Price: " << result["index_price"] << '\n';
-                std::cout << "Direction: " << result["direction"] << '\n';
-                std::cout << "Open Orders Margin: " << result["open_orders_margin"] << '\n';
-                std::cout << "Initial Margin: " << result["initial_margin"] << '\n';
-                std::cout << "Maintenance Margin: " << result["maintenance_margin"] << '\n';
-                std::cout << "Kind: " << result["kind"] << '\n';
-                std::cout << "Size: " << result["size"] << '\n';
-    } else {
+    if (responseJson.contains("result"))
+    {
+        std::cout << "Position Details for " << instrument << ":\n\n";
+        auto result = responseJson["result"];
+        std::cout << "Estimated Liquidation Price: " << result["estimated_liquidation_price"] << '\n';
+        std::cout << "Size Currency: " << result["size_currency"] << '\n';
+        std::cout << "Realized Funding: " << result["realized_funding"] << '\n';
+        std::cout << "Total Profit Loss: " << result["total_profit_loss"] << '\n';
+        std::cout << "Realized Profit Loss: " << result["realized_profit_loss"] << '\n';
+        std::cout << "Floating Profit Loss: " << result["floating_profit_loss"] << '\n';
+        std::cout << "Leverage: " << result["leverage"] << '\n';
+        std::cout << "Average Price: " << result["average_price"] << '\n';
+        std::cout << "Delta: " << result["delta"] << '\n';
+        std::cout << "Interest Value: " << result["interest_value"] << '\n';
+        std::cout << "Mark Price: " << result["mark_price"] << '\n';
+        std::cout << "Settlement Price: " << result["settlement_price"] << '\n';
+        std::cout << "Index Price: " << result["index_price"] << '\n';
+        std::cout << "Direction: " << result["direction"] << '\n';
+        std::cout << "Open Orders Margin: " << result["open_orders_margin"] << '\n';
+        std::cout << "Initial Margin: " << result["initial_margin"] << '\n';
+        std::cout << "Maintenance Margin: " << result["maintenance_margin"] << '\n';
+        std::cout << "Kind: " << result["kind"] << '\n';
+        std::cout << "Size: " << result["size"] << '\n';
+    }
+    else
+    {
         std::cerr << "Error: Could not retrieve position data." << std::endl;
     }
 
@@ -272,7 +281,7 @@ int main()
 {
     std::string clientId = getEnvVariable("CLIENT_ID");
     std::string clientSecret = getEnvVariable("CLIENT_SECRET");
-    
+
     if (clientId.empty() || clientSecret.empty())
     {
         std::cerr << "Error: CLIENT_ID or CLIENT_SECRET is missing in .env file.\n";

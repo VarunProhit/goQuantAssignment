@@ -1,6 +1,7 @@
 # GoQuant Assignment
 
 # Objective
+
 Create a high-performance order execution and management system to trade on Deribit Test ([https://test.deribit.com/](https://test.deribit.com/)) using C++.
 
 ---
@@ -18,10 +19,10 @@ Create a high-performance order execution and management system to trade on Deri
 
 ### **Order Management Functions**
 
-1. **Place order**  
-2. **Cancel order**  
-3. **Modify order**  
-4. **Get orderbook**  
+1. **Place order**
+2. **Cancel order**
+3. **Modify order**
+4. **Get orderbook**
 5. **View current positions**
 6. **Real-time market data streaming via WebSocket**
    - Implement WebSocket server functionality.
@@ -101,52 +102,67 @@ Create a high-performance order execution and management system to trade on Deri
 ## Dependencies
 
 1. **cURL**: Install via the following commands:
-    ```bash
-    sudo apt update
-    sudo apt install libcurl4-openssl-dev
-    ```
+
+   ```bash
+   sudo apt update
+   sudo apt install libcurl4-openssl-dev
+   ```
 
 2. **JSON for Modern C++**: Download the header file from [nlohmann/json GitHub page](https://github.com/nlohmann/json) or install via a package manager:
-    ```bash
-    sudo apt install nlohmann-json3-dev
-    ```
+   ```bash
+   sudo apt install nlohmann-json3-dev
+   ```
 3. **Boost Libraries**: Install boost:
-    ```bash
-    sudo apt update
-    sudo apt install libboost-all-dev
-    ```
-3. **Web socket**: Install websocket++:
-    ```bash
-    sudo apt install libwebsocketpp-dev
-    ```
+   ```bash
+   sudo apt update
+   sudo apt install libboost-all-dev
+   ```
+4. **Web socket**: Install websocket++:
+   ```bash
+   sudo apt install libwebsocketpp-dev
+   ```
+
 ## Setup
 
 1. Clone the repository to your local machine:
-    ```bash
-    git clone https://github.com/VarunProhit/goQuantAssignment
-    cd goQuantAssignment
-    ```
+
+   ```bash
+   git clone https://github.com/VarunProhit/goQuantAssignment
+   cd goQuantAssignment
+   ```
 
 2. Ensure the necessary libraries (`curl`, `nlohmann/json` and, `websocketpp`) are installed.
 
 3. Add the path to `json.hpp` if it's not already in your include path:
-    - Place `json.hpp` in the `include/` directory within the project.
+
+   - Place `json.hpp` in the `include/` directory within the project.
+
+4. Create `.env` file and add client id and secret in it.
+
+```
+CLIENT_ID=client1
+CLIENT_SECRET=secret1
+```
 
 ## Compilation
 
-Use the following command to compile  and execute trading menu:
+Use the following command to compile and execute trading menu:
 
 ```bash
 g++ trading.cpp -o trading -lcurl -I include
 ./trading
 ```
+
 Use following command to compile client and server for Real-time market data streaming
 
 ```bash
 g++ -std=c++17 server.cpp -o server -lboost_system -lpthread
 ./server
 ```
+
 In another terminal
+
 ```bash
 g++ -std=c++17 client.cpp -o client -lboost_system -lpthread
+./client
 ```
